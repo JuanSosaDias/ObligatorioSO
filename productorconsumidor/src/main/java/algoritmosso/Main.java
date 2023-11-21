@@ -1,5 +1,6 @@
 package algoritmosso;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
@@ -13,10 +14,10 @@ public class Main {
 
     // Bucle infinito para hacer la pregunta
     while (true) {
-        try {
             // Preguntar al usuario si desea consumir o producir
             System.out.print("¿Desea consumir (c) o producir (p)? ");
             String opcion = scanner.nextLine();
+            
 
             // Si el usuario desea consumir
             if (opcion.equals("c")) {
@@ -29,9 +30,6 @@ public class Main {
                 // Opción no válida
                 System.out.println("Opción no válida.");
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 }
 }
