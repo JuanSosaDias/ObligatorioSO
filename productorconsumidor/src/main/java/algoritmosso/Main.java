@@ -1,68 +1,37 @@
 package algoritmosso;
 
-import java.util.LinkedList;
 import java.util.Scanner;
 
-import javax.management.RuntimeErrorException;
+public class Main {
 
-class ProdCons {
+    public static void main(String[] args) throws InterruptedException {
+        // Crear la cola
+    Cola cola = new Cola(100);
 
-
-    private LinkedList<Integer> almacen = new LinkedList<>();
+    // Crear el objeto que hará la pregunta
     Scanner scanner = new Scanner(System.in);
-    
 
+    // Bucle infinito para hacer la pregunta
+    while (true) {
+        try {
+            // Preguntar al usuario si desea consumir o producir
+            System.out.print("¿Desea consumir (c) o producir (p)? ");
+            String opcion = scanner.nextLine();
 
-    private final int CAPACIDAD = scanner.nextInt();
-
-    public synchronized void Producir () throws InterruptedException {
-        int elemento = 1;
-        while (true) {
-            while (almacen.size()==CAPACIDAD) { //Si es array tenemos el largo y no ocupamos memoria al pedo
-                wait();
+            // Si el usuario desea consumir
+            if (opcion.equals("c")) {
+                // Crear un nuevo hilo consumidor
+                new Consumidor(cola).start();
+            } else if (opcion.equals("p")) {
+                // Crear un nuevo hilo productor
+                new Productor(cola).start();
+            } else {
+                // Opción no válida
+                System.out.println("Opción no válida.");
             }
-            System.out.println("Productor produce: " + elemento + " ° fruta");
-            almacen.add(elemento);
-            elemento ++;
-            notify();
-            Thread.sleep(1000);
-        }
-
-    }
-
-    public synchronized void Consumir () throws InterruptedException {
-        while (true) {
-            while (almacen.isEmpty()) {
-                wait();
-            }
-            int elemento = almacen.poll();
-            System.out.println("Consumidor Consume "+ elemento + " ° fruta");
-            notify();
-            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }
-
-public class Main {
-    public static void main(String[] args) {
-        System.out.println("HOLA, EMPEZEMOS A TRABAJAR EN NUESTRO SUPERMERCADO!");
-        System.out.println("Ingrese la cantidad de su almacen: ");
-        ProdCons pc = new ProdCons();
-        Thread productor = new Thread( ()-> {
-            try {
-                pc.Producir();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        } );
-        Thread consumidor = new Thread ( () -> {
-            try {
-                pc.Consumir();
-            } catch (InterruptedException e) {
-                throw new RuntimeException();
-            }
-        });
-        productor.start();
-        consumidor.start();
-    }
 }
